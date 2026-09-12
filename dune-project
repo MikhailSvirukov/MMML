@@ -2,8 +2,6 @@
 
 (name comp26)
 
-(generate_opam_files true)
-
 (source
  (github username/reponame))
 
@@ -17,6 +15,7 @@
 
 (package
  (name demo)
+ (allow_empty)
  (synopsis "A short LLVM demo")
  (depends
   ocaml
@@ -31,12 +30,19 @@
    (= "0.6"))))
 
 (package
- (name demo2)
- (allow_empty)
- (synopsis "A short synopsis")
- (description "A longer description")
- (depends ocaml)
- (tags
-  ("add topics" "to describe" your project)))
+ (name MML)
+ (synopsis "A short LLVM project")
+ (depends
+  ocaml
+  dune
+  (angstrom
+   (= "0.16.0"))
+  qcheck
+  bisect_ppx_ng
+  ppx_deriving
+  (llvm
+   (= "18-shared"))
+  (ppx_deriving_qcheck
+   (= "0.6"))))
 
 ; See the complete stanza docs at https://dune.readthedocs.io/en/stable/reference/dune-project/index.html
