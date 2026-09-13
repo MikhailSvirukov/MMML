@@ -28,7 +28,7 @@ workflows:
 
               - >
                 DEBIAN_FRONTEND=noninteractive
-                apt-get install -y
+                apt-get install -y --no-install-recommends
                 ca-certificates
                 git
                 opam
@@ -36,6 +36,9 @@ workflows:
                 pkg-config
                 m4
                 rsync
+                cmake
+                zlib1g-dev
+                libzstd-dev
                 llvm-18
                 llvm-18-dev
 
@@ -43,7 +46,7 @@ workflows:
 
               - git config --global --add safe.directory "$SOURCECRAFT_WORKSPACE"
 
-              - opam init --disable-sandboxing --yes
+              - opam init --bare --disable-sandboxing --yes
 
               - opam update
 
