@@ -12,7 +12,7 @@ on:
       - .github/workflows/PR.yml
       - .github/workflows/PrPost.yml
     branches:
-      - 'master'
+      - 'main'
 env:
   OPAMROOT: /home/opam/.opam
   OPAMYES: true
