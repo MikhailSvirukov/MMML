@@ -1,9 +1,7 @@
-(ocamllex lexer)
-
 (library
  (name frontend)
  (public_name MMML.frontend)
- (modules ast)
+ (modules ast pretty_printer)
  (wrapped false)
  (libraries qcheck)
  (preprocess
