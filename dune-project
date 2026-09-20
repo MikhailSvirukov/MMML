@@ -39,6 +39,7 @@
   qcheck
   bisect_ppx_ng
   ppx_deriving
+  ppx_inline_test
   (llvm
    (= "18-shared"))
   (ppx_deriving_qcheck
