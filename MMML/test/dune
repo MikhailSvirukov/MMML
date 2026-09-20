@@ -1,0 +1,8 @@
+(library
+ (name frontend_unit_tests)
+ (package MMML)
+ (modules pretty_printer_test)
+ (libraries MMML.frontend)
+ (inline_tests)
+ (preprocess
+  (pps ppx_inline_test)))
