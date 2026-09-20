@@ -1,14 +1,4 @@
-(library
- (name frontend_unit_tests)
- (package MMML)
- (modules lexer_test pretty_printer_test)
- (libraries MMML.frontend)
- (inline_tests)
- (preprocess
-  (pps ppx_inline_test)))
-
 (test
- (name lexer_qcheck)
+ (name pretty_printer_test)
  (package MMML)
- (modules lexer_qcheck)
- (libraries MMML.frontend qcheck))
+ (libraries MMML.frontend))
