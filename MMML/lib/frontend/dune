@@ -5,5 +5,7 @@
  (public_name MMML.frontend)
  (modules ast error_monad lexer location pretty_printer token)
  (wrapped false)
+ (instrumentation
+  (backend bisect_ppx_ng))
  (preprocess
   (pps ppx_deriving.show)))
