@@ -15,6 +15,7 @@
 
 (package
  (name demo)
+ (allow_empty)
  (synopsis "A short LLVM demo")
  (depends
   ocaml
