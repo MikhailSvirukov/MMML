@@ -392,7 +392,17 @@ let precedence_and_syntax =
          fixed_expressions)
 ;;
 
-let cps_examples =
+let check_cps_program source expected =
+  check_program source expected
+  && check_parse
+       ~parse:(fun source -> Parser_menhir.parse_program_lexbuf (refilled_lexbuf source))
+       ~equal:equal_program
+       ~show:show_program
+       source
+       expected
+;;
+
+let cps_factorial =
   let n = var "n"
   and k = var "k" in
   let factorial =
@@ -409,6 +419,31 @@ let cps_examples =
                 ; Lambda (pvar "r", Application (k, infix "*" n (var "r")))
                 ] )))
   in
+  let source =
+    String.concat
+      "\n"
+      [ "let rec fac n k ="
+      ; "if n <= 1 then k 1 else fac (n - 1) (fun r -> k (n * r))"
+      ; "let answer = fac 5 (fun x -> x)"
+      ]
+  in
+  let expected =
+    [ Value (Recursive, factorial, [])
+    ; Value
+        ( Nonrecursive
+        , binding
+            (pvar "answer")
+            (application (var "fac") [ int 5; Lambda (pvar "x", var "x") ])
+        , [] )
+    ]
+  in
+  Test.make ~name:"Menhir: CPS factorial program" ~count:1 unit (fun () ->
+    check_cps_program source expected)
+;;
+
+let cps_fibonacci =
+  let n = var "n"
+  and k = var "k" in
   let fibonacci =
     binding
       (pvar "fib")
@@ -430,33 +465,26 @@ let cps_examples =
                 ] )))
   in
   let source =
-    "let rec fac n k =\n\
-     if n <= 1 then k 1 else fac (n - 1) (fun r -> k (n * r))\n\
-     let rec fib n k =\n\
-     if n <= 1 then k n else\n\
-     fib (n - 1) (fun a -> fib (n - 2) (fun b -> k (a + b)));;\n\
-     let answer = fac 5 (fun x -> x)"
+    String.concat
+      "\n"
+      [ "let rec fib n k ="
+      ; "if n <= 1 then k n else"
+      ; "fib (n - 1) (fun a -> fib (n - 2) (fun b -> k (a + b)));;"
+      ; "let answer = fib 5 (fun x -> x)"
+      ]
   in
   let expected =
-    [ Value (Recursive, factorial, [])
-    ; Value (Recursive, fibonacci, [])
+    [ Value (Recursive, fibonacci, [])
     ; Value
         ( Nonrecursive
         , binding
             (pvar "answer")
-            (application (var "fac") [ int 5; Lambda (pvar "x", var "x") ])
+            (application (var "fib") [ int 5; Lambda (pvar "x", var "x") ])
         , [] )
     ]
   in
-  Test.make ~name:"Menhir: CPS factorial and Fibonacci programs" ~count:1 unit (fun () ->
-    check_program source expected
-    && check_parse
-         ~parse:(fun source ->
-           Parser_menhir.parse_program_lexbuf (refilled_lexbuf source))
-         ~equal:equal_program
-         ~show:show_program
-         source
-         expected)
+  Test.make ~name:"Menhir: CPS Fibonacci program" ~count:1 unit (fun () ->
+    check_cps_program source expected)
 ;;
 
 let check_rejected parse source =
@@ -555,7 +583,8 @@ let () =
     ; program_round_trip
     ; streaming_expressions
     ; precedence_and_syntax
-    ; cps_examples
+    ; cps_factorial
+    ; cps_fibonacci
     ; invalid_syntax
     ; full_input_consumption
     ; error_locations
