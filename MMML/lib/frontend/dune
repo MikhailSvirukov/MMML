@@ -3,9 +3,10 @@
 (library
  (name frontend)
  (public_name MMML.frontend)
- (modules ast error_monad lexer location pretty_printer token)
+ (modules ast error_monad lexer location pretty_printer token topdown_parser)
  (wrapped false)
+ (libraries qcheck)
  (instrumentation
   (backend bisect_ppx_ng))
  (preprocess
-  (pps ppx_deriving.show)))
+  (pps ppx_deriving.show ppx_deriving_qcheck)))
